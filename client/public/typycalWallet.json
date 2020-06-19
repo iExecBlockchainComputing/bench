@@ -1,0 +1,87 @@
+{
+	"provider": {
+		"_balances":{
+
+		},
+		"_emitted":{
+			"block":-2
+		},
+		"_events":[
+
+		],
+		"_fastQueryDate":0,
+		"_lastBlockNumber":-2
+		,"_network":{
+			"chainId":42,
+			"ensAddress":null,
+			"name":"kovan"
+		},
+		"_pollingInterval":4000,
+		"_providers":[{
+			"_balances":{
+
+			},
+			"_emitted":{
+				"block":-2
+			},
+			"_events":[
+
+			],
+			"_fastQueryDate":0,
+			"_lastBlockNumber":-2,
+			"_network":{
+				"chainId":42,
+				"ensAddress":null,
+				"name":"kovan"
+			},
+			"_pollingInterval":4000,
+			"apiAccessToken":null,
+			"connection":{
+				"url":"https://kovan.infura.io/v3/7d0d81d0919f4f05b9ab6634be01ee73"
+			},
+			"projectId":"7d0d81d0919f4f05b9ab6634be01ee73",
+			"ready":{
+
+			}
+		},
+		{
+			"_balances":{
+
+			},
+			"_emitted":{
+				"block":-2
+			},
+			"_events":[
+
+			],
+			"_fastQueryDate":0,
+			"_lastBlockNumber":-2,
+			"_network":{
+				"chainId":42,
+				"name":"kovan"
+			},
+			"_pollingInterval":4000,
+			"baseUrl":"https://api-kovan.etherscan.io",
+			"ready":{
+
+			}
+		}
+	],
+	"ready":{
+
+	}
+},
+"signingKey":{
+	"address":"0xF62D030fE7C4e2CF894249dd82d4B24a0C733649",
+	"keyPair":{
+		"compressedPublicKey":"0x03fd510d9c4d9ceca2548eb41c33cc618751fc400d468a47da12887dc0cdbc1c2a",
+		"privateKey":"0x8381d84f3639608f826f42f9ccd4cf70965f52d62af5bb233eef695986fb4a8b",
+		"publicKey":"0x04fd510d9c4d9ceca2548eb41c33cc618751fc400d468a47da12887dc0cdbc1c2adedce30f5ea98fa005afe4e87cf1fc075901963d07b7668221a6e204d02b2821",
+		"publicKeyBytes":[
+			3,253,81,13,156,77,156,236,162,84,142,180,28,51,204,97,135,81,252,64,13,70,138,71,218,18,136,125,192,205,188,28,42
+		]
+	},
+	"privateKey":"0x8381d84f3639608f826f42f9ccd4cf70965f52d62af5bb233eef695986fb4a8b",
+	"publicKey":"0x04fd510d9c4d9ceca2548eb41c33cc618751fc400d468a47da12887dc0cdbc1c2adedce30f5ea98fa005afe4e87cf1fc075901963d07b7668221a6e204d02b2821"
+}
+}
