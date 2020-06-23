@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var walletsRouter = require("./routes/wallets");
 var benchRouter = require("./routes/bench");
 var blockRouter = require("./routes/block");
+var scenarioRouter = require("./routes/scenario");
 var bodyParser = require('body-parser');
 
 var app = express();
@@ -32,6 +33,7 @@ app.use('/', indexRouter);
 app.use('/wallets', walletsRouter);
 app.use('/bench', benchRouter);
 app.use('/block', blockRouter);
+app.use('/scenario', scenarioRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

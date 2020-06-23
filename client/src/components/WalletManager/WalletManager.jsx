@@ -94,7 +94,7 @@ export default function WalletManager() {
 		}
 	}, [globalState.reload]);
 
-	const handleChange = panel => (event, isExpanded) => {
+	const handleChangePanel = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
 	};
 	
@@ -347,7 +347,7 @@ export default function WalletManager() {
 					<h1>Wallets</h1>
 					{globalState.wallets.map((wallet, index) => (
 					
-					<ExpansionPanel expanded={expanded === index } onChange={handleChange(index)}>
+					<ExpansionPanel expanded={expanded === index } onChange={handleChangePanel(index)}>
 						<ExpansionPanelSummary
 							expandIcon={<ExpandMoreIcon />}
 							aria-controls="panel1bh-content"

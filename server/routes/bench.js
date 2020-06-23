@@ -7,58 +7,6 @@ var async = require('async');
 var shell = require('shelljs');
 var yml = require('yaml');
 
-var specTpl = {
-  "name": "", // change chain name here
-  "engine": {
-    "authorityRound": {
-      "params": {
-        "stepDuration": 5,
-        "blockReward": "0x0",
-        "maximumUncleCountTransition": 0,
-        "maximumUncleCount": 0,
-        "validators": {
-          "multi": {
-            // "0": {
-            //   "list": [
-            //     // add all validators address
-            //   ]
-            // }
-          }
-        }
-      }
-    }
-  },
-  "params": {
-    "gasLimitBoundDivisor": "0x400",
-    "maximumExtraDataSize": "0x20",
-    "minGasLimit": "0x1388",
-    "networkID": "0x11",
-    "eip140Transition": "0x0",
-    "eip211Transition": "0x0",
-    "eip214Transition": "0x0",
-    "eip658Transition": "0x0",
-    "eip145Transition": "0x0",
-    "eip1014Transition": "0x0",
-    "eip1052Transition": "0x0",
-    "eip1283Transition": "0x0",
-    "eip1283DisableTransition": "0x0",
-  },
-  "genesis": {
-    "seal": {
-      "authorityRound": {
-        "step": "0x0",
-        "signature": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-      }
-    },
-    "difficulty": "0x20000",
-    "gasLimit": "0x663BE0"
-  },
-  "accounts": {
-    //add accounts that have coins
-    // "address": {"balance": "1000000000"}
-  }
-}
-
 router.post('/poaMocGroup', function(req, res) {
   var path = "./repos/poa-deployment-bench/";
   var poaDeployementRepo = req.body.poaDeployementRepo;
@@ -207,6 +155,58 @@ ansible_sudo_pass="" ` + "\n";
 
   })
 });
+
+var specTpl = {
+  "name": "", // change chain name here
+  "engine": {
+    "authorityRound": {
+      "params": {
+        "stepDuration": 5,
+        "blockReward": "0x0",
+        "maximumUncleCountTransition": 0,
+        "maximumUncleCount": 0,
+        "validators": {
+          "multi": {
+            // "0": {
+            //   "list": [
+            //     // add all validators address
+            //   ]
+            // }
+          }
+        }
+      }
+    }
+  },
+  "params": {
+    "gasLimitBoundDivisor": "0x400",
+    "maximumExtraDataSize": "0x20",
+    "minGasLimit": "0x1388",
+    "networkID": "0x11",
+    "eip140Transition": "0x0",
+    "eip211Transition": "0x0",
+    "eip214Transition": "0x0",
+    "eip658Transition": "0x0",
+    "eip145Transition": "0x0",
+    "eip1014Transition": "0x0",
+    "eip1052Transition": "0x0",
+    "eip1283Transition": "0x0",
+    "eip1283DisableTransition": "0x0",
+  },
+  "genesis": {
+    "seal": {
+      "authorityRound": {
+        "step": "0x0",
+        "signature": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    "difficulty": "0x20000",
+    "gasLimit": "0x663BE0"
+  },
+  "accounts": {
+    //add accounts that have coins
+    // "address": {"balance": "1000000000"}
+  }
+}
 
 router.post('/genSpec', function(req, res) {
   var path = "./repos/poa-deployment-bench/";

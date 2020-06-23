@@ -1,17 +1,13 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { useState, useEffect } from 'react';
+import { useTracked } from '../../components/State';
 
 import { makeStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ListItem from '@material-ui/core/ListItem';
-import Icon from '@material-ui/core/Icon';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -20,30 +16,66 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function KillNodes() {
+export default function KillNodes(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = useState(false);
 
-	const [nbTransaction, setNbTransaction ] = useState(2000);
-	const [timeBetween2Tx, setTimeBetween2Tx ] = useState(1);
-	const [nbDown, setNbDown ] = useState(4);
-	const [timeBetween2Down, setTimeBetween2Down ] = useState([""]);
-	const [downDate, setDownDate ] = useState([""]);
-	const [nbDownNodes, setNbDownNodes ] = useState([""]);
-	const [timeToUp, setTimeToUp ] = useState([""]);
-  const [panelSize, setPanelSize] = useState([""]);
+	const [ timeBeforeReUp, setTimeBeforeReUp ] = useState(100);
+  const [ priority, setPriority ] = useState(1);
+  const [ nbNodes, setNbNodes ] = useState(2);
+  const [ bootnode, setBootnode ] = useState(false);
+  const [ moc, setMoc ] = useState(false);
+  const [ validators, setValidators ] = useState(true);
+  const [ globalState, setGlobalState ] = useTracked();
 
-  const handleChange = panel => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-	};
+  useEffect(() => {
+    globalState.events[props.id] = {
+      ...globalState.events[props.id],
+      priority,
+      timeBeforeReUp,
+      nbNodes,
+      bootnode,
+      moc, 
+      validators
+    };
+  }, []);
 
-  function _setNbDown(el) {
-    setNbDown(el)
-    let tmp = [];
-    for(let i = 0; i < nbDown; i++) {
-      tmp.push("");
-    }
+  function _setBootnode(event) {
+    setBootnode(event.target.checked);
+    globalState.events[props.id] = {
+      ...globalState.events[props.id], 
+      "bootnode": event.target.checked
+    };
+  }
 
+  function _setMoc(event) {
+    setMoc(event.target.checked);
+    globalState.events[props.id] = {
+      ...globalState.events[props.id], 
+      "moc": event.target.checked
+    };
+  }
+
+  function _setValidators(event) {
+    setValidators(event.target.checked);
+    globalState.events[props.id] = {
+      ...globalState.events[props.id], 
+      "validators": event.target.checked
+    };
+  }
+
+  function _setTimeBeforeReUp(value) {
+    setTimeBeforeReUp(value);
+    globalState.events[props.id].timeBeforeReUp = value;
+  }
+
+  function _setNbNodes(value) {
+    setNbNodes(value);
+    globalState.events[props.id].nbNodes = value;
+  }
+  
+  function _setPriority(value) {
+    setPriority(value);
+    globalState.events[props.id].priority = value;
   }
 
 	return (
@@ -53,46 +85,66 @@ export default function KillNodes() {
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label="Number of transaction"
+        label="Time before reUp nodes"
         inputProps={{ 'aria-label': ''}}
-        value={nbTransaction}
-        onChange={(e) => setNbTransaction(e.value)}
+        value={timeBeforeReUp}
+        onChange={(e) => _setTimeBeforeReUp(e.target.value)}
       />
       <br></br>
       <TextField
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label="Time between 2 transactions"
+        label="Number of Down nodes"
         inputProps={{ 'aria-label': ''}}
-        value={timeBetween2Tx}
-        onChange={(e) => setTimeBetween2Tx(e.value)}
-      />
+        value={nbNodes}
+        onChange={(e) => _setNbNodes(e.target.value)}
+      ></TextField>
       <br></br>
       <TextField
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label=""
+        label="Priority"
         inputProps={{ 'aria-label': ''}}
-        value={nbDown}
-        onChange={(e) => _setNbDown(e.value)}
-      ><RemoveCircleIcon color="primary"/></TextField>
+        value={priority}
+        onChange={(e) => _setPriority(e.target.value)}
+      />
       <br></br>
-      {panelSize.map((el, index) => (
-					<ExpansionPanel expanded={expanded === index } onChange={handleChange(index)}>
-						<ExpansionPanelSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls="panel1bh-content"
-							id="panel1bh-header"
-						>
-							{/* <Typography noWrap className={classes.heading}>{wallet.address}</Typography> */}
-						</ExpansionPanelSummary>
-						<ExpansionPanelDetails>
-							{/* <ListItem><Typography noWrap>Private Key: {wallet.privateKey}</Typography></ListItem> */}
-						</ExpansionPanelDetails>
-					</ExpansionPanel>
-					))}
+      <h5>Type of nodes</h5>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={bootnode}
+            onChange={_setBootnode}
+            name="bootnode"
+            color="primary"
+          />
+        }
+        label="Bootnode"
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={moc}
+            onChange={_setMoc}
+            name="moc"
+            color="primary"
+          />
+        }
+        label="Moc"
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={validators}
+            onChange={_setValidators}
+            name="validators"
+            color="primary"
+          />
+        }
+        label="Validators"
+      />
     </div>
 	);
 }

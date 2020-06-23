@@ -181,7 +181,8 @@ export default function PoaNetwork() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: stringify({
-        'spec': spec
+        'name': chainName,
+        'validators': otherHostModified
       })
     };
     fetch(express + '/bench/genSpec', requestOptions)
@@ -343,7 +344,7 @@ export default function PoaNetwork() {
             aria-label="horizontal outlined primary button group"
           >
             <Button onClick={() => generateConfig()}>Generate config</Button>
-            <Button onClick={() => test()}>Start chain</Button>
+            {/* <Button onClick={() => test()}>Start chain</Button> */}
             <Button onClick={() => displayConfig()}>Display configuration</Button>
           </ButtonGroup>
           <br></br>

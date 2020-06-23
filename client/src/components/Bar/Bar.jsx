@@ -104,12 +104,12 @@ export default function Bar() {
         <ListItemText primary="Wallet Manager"/>
       </ListItem>
       <Divider/>
-      <ListItem button key="Bench Initiation" onClick={() => handleChangePage("initiation")}>
-        <ListItemText primary="Bench Initiation"/>
-      </ListItem>
-      <Divider/>
       <ListItem button key="PoA Network" onClick={() => handleChangePage("poaNetwork")}>
         <ListItemText primary="PoA Network"/>
+      </ListItem>
+      <Divider/>
+      <ListItem button key="Scenario Creator" onClick={() => handleChangePage("scenario")}>
+        <ListItemText primary="Scenario Creator"/>
       </ListItem>
     </List>
   </div>

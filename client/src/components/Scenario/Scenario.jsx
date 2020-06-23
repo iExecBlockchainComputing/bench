@@ -1,11 +1,10 @@
 import React from 'react';
-import { ethers } from 'ethers';
 import { useState, useEffect } from 'react';
 import { useTracked } from '../State';
 import stringify from 'fast-json-stable-stringify'
 
 import TxPerSec from '../../bench/TxPerSec'
-import KillNodes from '../../bench/KillNodes'
+// import KillNodes from '../../bench/KillNodes'
 
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,24 +15,12 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
-import ListItem from '@material-ui/core/ListItem';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import InputBase from '@material-ui/core/InputBase';
-import Input from '@material-ui/core/Input';
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
-import { populateTransaction } from 'ethers/utils';
 import Divider from '@material-ui/core/Divider';
-import { forEach } from 'benchmark';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
+import KillNodes from '../../bench/KillNodes';
 
 const useStyles = makeStyles(theme => ({
 	bottom: {
@@ -85,27 +72,26 @@ export default function Scenario() {
   const classes = useStyles();
   const express = "http://localhost:9000";
 
+  const TYPE_OF_SCENARIOS = ["Tx Per sec", "Kill Nodes", "Malicious Nodes"];
+  // const CONTENT_BY_TYPE = [<TxPerSec id={index}/>, <KillNodes/>]
+
+  const [expanded, setExpanded] = useState(false);
   const [waitFetchBlock, setWaitFetchBlock] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
-  const [logs, setLogs] = useState("");
 	const [globalState, setGlobalState ] = useTracked();
-	const [scenarioType, setScenarioType ] = useState(1);
-  const [form, setForm ] = useState([<TxPerSec/>, <KillNodes/>]);
+  const [scenarioType, setScenarioType ] = useState(0);
+  const [time, setTime] = useState(100);
+  const [scenarioName, setScenarioName] = useState("test");
 
-  // const [repo, setRepo] = useState("");
-  // const [repoFetch, setRepoFetch] = useState("nathPay");
-  // const [chainName, setChainName] = useState("test");
-  // const [mail, setMail] = useState("np@iex.ec");
-  // const [mocHost, setMocHost] = useState("taurus-2.lyon.grid5000.fr");
-  // const [bootnodeHost, setBootnodeHost] = useState("taurus-10.lyon.grid5000.fr");
-  // const [otherHost, setOtherHost] = useState("taurus-11.lyon.grid5000.fr");
-  // const [sshKeyPath, setSshKeyPath] = useState("");
-  
-  // var web3Provider = new ethers.providers.JsonRpcProvider("https://rpcmainnet1w7wagudqhtw5khzsdtv.iex.ec");
-
-  const handleChangeType = (event) => {
-    setScenarioType(event.target.value);
+  const handleChangePanel = panel => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
   };
+
+  function addEvent() {
+    globalState.events.push({"type": scenarioType, "time": time})
+    setScenarioType(0);
+    setTime(time+1);
+  }
 
   function test() {
   }
@@ -115,10 +101,22 @@ export default function Scenario() {
   }
 
   function displayConfig() {
+    console.log(globalState.events);
   }
 
   function genScenario() {
-
+    let requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: stringify({
+        'events': globalState.events,
+        scenarioName
+      })
+    };
+    fetch(express + '/scenario/genScenario', requestOptions)
+    .then(() => {
+      enqueueSnackbar("successfully created", {variant: "success"})
+    });
   }
 
   return (
@@ -134,80 +132,38 @@ export default function Scenario() {
             label="Type of scenario"
             inputProps={{ 'aria-label': ''}}
             value={scenarioType}
-            onChange={handleChangeType}
+            onChange={(e) => setScenarioType(e.target.value)}
             select
           >
             <MenuItem value={0}>Transaction per seconds</MenuItem>
             <MenuItem value={1}>Killing nodes</MenuItem>
             {/* <MenuItem value={2}>Malicious nodes</MenuItem> */}
           </TextField>
-          {/* <TextField
-            className={classes.textField}
-            id="outlined-basic"
-            variant="outlined"
-            label=""
-            inputProps={{ 'aria-label': ''}}
-            value={}
-            onChange={}
-          />
           <TextField
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
-            label=""
-            inputProps={{ 'aria-label': ''}}
-            value={}
-            onChange={}
-          /> */}
+            label="At (in sec)"
+            inputProps={{ 'aria-label': 'at (in sec)'}}
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+          />
+          <br></br>
+          <br></br>
+          <Button size="large" variant="contained" color="primary" onClick={() => addEvent()}>Add Event</Button>
           <br></br>
           <br></br>
           <Divider></Divider>
           <br></br>
-          {
-            form[scenarioType]
-          }
-          {/* <TextField
-            className={classes.textField}
-            id="outlined-basic"
-            variant="outlined"
-            label="Moc ip"
-            inputProps={{ 'aria-label': 'moc host'}}
-            value={}
-            variant="outlined"
-            onChange={}
-          />
           <TextField
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
-            label="Bootnode ip"
-            inputProps={{ 'aria-label': 'bootnode host'}}
-            value={}
-            variant="outlined"
-            onChange={}
+            label="Scenario Name"
+            inputProps={{ 'aria-label': 'Scenario Name'}}
+            value={scenarioName}
+            onChange={(e) => setScenarioName(e.target.value)}
           />
-          <TextField
-            className={classes.textField}
-            id="outlined-multiline-static"
-            multiline
-            rows={3}
-            label=""
-            inputProps={{ 'aria-label': ''}}
-            value={}
-            variant="outlined"
-            onChange={}
-          /> */}
-          {/* <TextField
-            className={classes.textField}
-            id="outlined-basic"
-            variant="outlined"
-            label="SSH key path"
-            inputProps={{ 'aria-label': 'SSH key path'}}
-            value={sshKeyPath}
-            variant="outlined"
-            onChange={(e) => setSshKeyPath(e.currentTarget.value)}
-          /> */}
-          <br></br>
           <br></br>
           <ButtonGroup
             orientation="horizontal"
@@ -224,8 +180,21 @@ export default function Scenario() {
       </div>
       <div className={classes.right}>
         <Paper variant="outlined" className={classes.container}>
-          <h4>Logs:</h4>
-          {logs}
+          <h4>Scenario:</h4>
+          {globalState.events.map((el, index) => (
+					<ExpansionPanel expanded={expanded === index } onChange={handleChangePanel(index)}>
+						<ExpansionPanelSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1bh-content"
+							id="panel1bh-header"
+						>
+							<Typography noWrap className={classes.heading}>{"Event Type: " + TYPE_OF_SCENARIOS[el.type] + " | At: " + el.time + "sec"}</Typography>
+						</ExpansionPanelSummary>
+						<ExpansionPanelDetails>
+              { el.type === 0 ? <TxPerSec id={index}/> : <KillNodes id={index}/>}
+						</ExpansionPanelDetails>
+					</ExpansionPanel>
+					))}
 
         </Paper>
       </div>
@@ -233,6 +202,3 @@ export default function Scenario() {
     </div>
   )
 }
-
-// 35.180.32.186 moc
-// 35.181.48.191 other
