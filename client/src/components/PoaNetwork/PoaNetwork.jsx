@@ -5,28 +5,12 @@ import { useTracked } from '../State';
 import stringify from 'fast-json-stable-stringify'
 
 import { makeStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
-import ListItem from '@material-ui/core/ListItem';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import InputBase from '@material-ui/core/InputBase';
-import Input from '@material-ui/core/Input';
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
-import { populateTransaction } from 'ethers/utils';
 import Divider from '@material-ui/core/Divider';
-import { forEach } from 'benchmark';
 
 const useStyles = makeStyles(theme => ({
 	bottom: {
@@ -169,6 +153,7 @@ export default function PoaNetwork() {
           'mocHost': mocHost,
           'bootnodeHost': bootnodeHost,
           'otherHost': otherHostModified
+          // 'encryptedWallet': encryptedWallet
         })
       };
       fetch(express + '/bench/poaMocGroup', requestOptions)
@@ -176,13 +161,14 @@ export default function PoaNetwork() {
         enqueueSnackbar("successfully initiated", {variant: "success"})
       });
     });
-    // genSpec();
+
+    // Generating Spec.json File
+    genSpec();
     let requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: stringify({
-        'name': chainName,
-        'validators': otherHostModified
+        'spec': spec
       })
     };
     fetch(express + '/bench/genSpec', requestOptions)
@@ -190,26 +176,28 @@ export default function PoaNetwork() {
     .then(res => {
       enqueueSnackbar(res.msg, {variant: res.type});
     })
-    
-    // let sidechainProvider = new ethers.providers.JsonRpcProvider("https://" + otherHostModified[0]);
 
-    // let transaction = {
-    //   nonce: 0,
-    //   to: ,
-    //   value: ethers.utils.parseEther(stringify(0)),
-    //   gasLimit: 21000,
-    //   gasPrice: ethers.utils.bigNumberify("20000000000"),
-    //   chainId: sidechainProvider.chainId,
-    // }
-    // let tmpWallet = new ethers.Wallet("0x8381D84F3639608F826F42F9CCD4CF70965F52D62AF5BB233EEF695986FB4A8B", sidechainProvider);
-    // let signedPromise = tmpWallet.sign(transaction);
-    // signedPromise.then((signedTransaction) => {
-    //   sidechainProvider.sendTransaction(signedTransaction)
-    //   .then((tx) => {
-    //     console.log(tx);
-    //     // sidechainProvider.waitForTransaction(tx.hash)
-    //   })
-    // })
+    // Generating files for scenarios
+    let walletScenario = [];
+    globalState.wallets.forEach(el => {
+      walletScenario.push({'privKey': el.privateKey, 'address': el.address, 'nonce': 0});
+    });
+    let requestOptions2 = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: stringify({
+        'bootnodeIP': bootnodeHost,
+        'mocIP': mocHost,
+        'validatorsIP': otherHostModified,
+        'wallets': walletScenario
+      })
+    };
+
+    fetch(express + '/bench/genScenarioData', requestOptions2)
+    .then(res => res.json())
+    .then(res => {
+      enqueueSnackbar(res.msg, {variant: res.type});
+    })
   }
 
   function test() {
@@ -244,6 +232,7 @@ export default function PoaNetwork() {
         = {"0": {"list": tmpList}};
       spec.accounts = tmpAccounts;
     }
+
     // if(globalState.mainWallet === {}) {
     //   enqueueSnackbar("please add main wallet", {variant: "success"})
     // } else {

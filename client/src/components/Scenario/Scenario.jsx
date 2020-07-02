@@ -80,7 +80,7 @@ export default function Scenario() {
 	const { enqueueSnackbar } = useSnackbar();
 	const [globalState, setGlobalState ] = useTracked();
   const [scenarioType, setScenarioType ] = useState(0);
-  const [time, setTime] = useState(100);
+  const [time, setTime] = useState(1000);
   const [scenarioName, setScenarioName] = useState("test");
 
   const handleChangePanel = panel => (event, isExpanded) => {
@@ -143,8 +143,8 @@ export default function Scenario() {
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
-            label="At (in sec)"
-            inputProps={{ 'aria-label': 'at (in sec)'}}
+            label="At (ms)"
+            inputProps={{ 'aria-label': 'at (ms)'}}
             value={time}
             onChange={(e) => setTime(e.target.value)}
           />

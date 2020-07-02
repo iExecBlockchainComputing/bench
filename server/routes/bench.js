@@ -15,7 +15,8 @@ router.post('/poaMocGroup', function(req, res) {
   var validatorParsed = {};
   // fs.writeFile('./getBootnode.sh', `curl -H "Content-Type: application/json" -k --data '{ "method": "parity_enode", "params": [], "id": 1, "jsonrpc": "2.0" }' -X POST taurus-13.lyon.grid5000.fr:8545 | jq ".result" > bootnode.txt`, )
   shell.exec('./scripts/initRepos.sh', (code, stdout, stderr) => {
-    // shell.cp('./repos/poa-deployment-bench/group_vars_tpl/*', './repos/poa-deployment-bench/group_vars/');
+    // shell.mkdir('./repos/poa-deployment-bench/group_vars/');
+    shell.cp('./repos/poa-deployment-bench/group_vars_tpl/*', './repos/poa-deployment-bench/group_vars/');
     
     //Modifying groups
     fsPromise.readFile('./encryptedWallet/wallet.json', 'utf8', (err) => {
@@ -154,59 +155,8 @@ ansible_sudo_pass="" ` + "\n";
     })
 
   })
-});
 
-var specTpl = {
-  "name": "", // change chain name here
-  "engine": {
-    "authorityRound": {
-      "params": {
-        "stepDuration": 5,
-        "blockReward": "0x0",
-        "maximumUncleCountTransition": 0,
-        "maximumUncleCount": 0,
-        "validators": {
-          "multi": {
-            // "0": {
-            //   "list": [
-            //     // add all validators address
-            //   ]
-            // }
-          }
-        }
-      }
-    }
-  },
-  "params": {
-    "gasLimitBoundDivisor": "0x400",
-    "maximumExtraDataSize": "0x20",
-    "minGasLimit": "0x1388",
-    "networkID": "0x11",
-    "eip140Transition": "0x0",
-    "eip211Transition": "0x0",
-    "eip214Transition": "0x0",
-    "eip658Transition": "0x0",
-    "eip145Transition": "0x0",
-    "eip1014Transition": "0x0",
-    "eip1052Transition": "0x0",
-    "eip1283Transition": "0x0",
-    "eip1283DisableTransition": "0x0",
-  },
-  "genesis": {
-    "seal": {
-      "authorityRound": {
-        "step": "0x0",
-        "signature": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-      }
-    },
-    "difficulty": "0x20000",
-    "gasLimit": "0x663BE0"
-  },
-  "accounts": {
-    //add accounts that have coins
-    // "address": {"balance": "1000000000"}
-  }
-}
+});
 
 router.post('/genSpec', function(req, res) {
   var path = "./repos/poa-deployment-bench/";
@@ -217,5 +167,21 @@ router.post('/genSpec', function(req, res) {
   })
 })
 
+router.post('/genScenarioData', function(req, res) {
+  var ips = {
+    'bootnode': req.body.bootnodeIP,
+    'moc': req.body.mocIP,
+    'validators': req.body.otherHostIP
+  };
+
+  fsPromise.writeFile('./scenariosTpl/ips.json', JSON.stringify(ips), (err) => {
+    if(err) throw err;
+  })
+
+  fsPromise.writeFile('./scenariosTpl/wallets.json', JSON.stringify(req.body.wallets), (err) => {
+    if(err) throw err;
+  })
+  res.send(JSON.stringify({type: "success", msg:"Scenario preparation generated"}))
+})
 
 module.exports = router;

@@ -1,5 +1,5 @@
 #!/bin/bash
-USER='nathPay'
+USER='iExecBlockchainComputing'
 
 if [ -d "./repos/poa-deployment-bench" ]; then
   cd ./repos/poa-deployment-bench;
