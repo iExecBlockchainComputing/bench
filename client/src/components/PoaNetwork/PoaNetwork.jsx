@@ -71,6 +71,8 @@ export default function PoaNetwork() {
   const [repoFetch, setRepoFetch] = useState("nathPay");
   const [chainName, setChainName] = useState("test");
   const [mail, setMail] = useState("np@iex.ec");
+  const [stepDuration, setStepDuration] = useState("5");
+  const [gasLimit, setGasLimit] = useState("0x663BE0");
   const [mocHost, setMocHost] = useState("taurus-2.lyon.grid5000.fr");
   const [bootnodeHost, setBootnodeHost] = useState("taurus-10.lyon.grid5000.fr");
   const [otherHost, setOtherHost] = useState("taurus-11.lyon.grid5000.fr");
@@ -152,7 +154,8 @@ export default function PoaNetwork() {
           'repoFetch': repoFetch,
           'mocHost': mocHost,
           'bootnodeHost': bootnodeHost,
-          'otherHost': otherHostModified
+          'otherHost': otherHostModified,
+          'wallets': globalState.wallets
           // 'encryptedWallet': encryptedWallet
         })
       };
@@ -163,7 +166,7 @@ export default function PoaNetwork() {
     });
 
     // Generating Spec.json File
-    genSpec();
+    genSpec(otherHostModified);
     let requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -215,7 +218,7 @@ export default function PoaNetwork() {
 
   }
 
-  function genSpec() {
+  function genSpec(validators) {
     spec.name = chainName;
     if(globalState.wallets.length === 0) {
       enqueueSnackbar("please add wallets", {variant: "error"})
@@ -224,21 +227,18 @@ export default function PoaNetwork() {
       let tmpAccounts = {};
       tmpAccounts[globalState.mainWallet.signingKey.address] = {"balance": "100000000000000000000000000000"};
       tmpList.push(globalState.mainWallet.signingKey.address)
+      for(let i = 0; i < validators.length; i++) {
+        tmpList.push(globalState.wallets[i].signingKey.address);
+      }
       globalState.wallets.forEach(el => {
         tmpAccounts[el.signingKey.address] = {"balance": "100000000000000000000000000000"};
-        tmpList.push(el.signingKey.address);
       });
       spec.engine.authorityRound.params.validators.multi
         = {"0": {"list": tmpList}};
       spec.accounts = tmpAccounts;
+      spec.engine.authorityRound.params.stepDuration = stepDuration;
+      spec.genesis.gasLimit = gasLimit;
     }
-
-    // if(globalState.mainWallet === {}) {
-    //   enqueueSnackbar("please add main wallet", {variant: "success"})
-    // } else {
-    //   spec.params.registrar = globalState.mainWallet.signingKey.address;
-    // }
-
   }
 
   function displayConfig() {
@@ -277,6 +277,24 @@ export default function PoaNetwork() {
             inputProps={{ 'aria-label': 'email address'}}
             value={mail}
             onChange={(e) => setMail(e.currentTarget.value)}
+          />
+          <TextField
+            className={classes.textField}
+            id="outlined-basic"
+            variant="outlined"
+            label="Block step duration"
+            inputProps={{ 'aria-label': 'Block step duration'}}
+            value={stepDuration}
+            onChange={(e) => setStepDuration(e.currentTarget.value)}
+          />
+          <TextField
+            className={classes.textField}
+            id="outlined-basic"
+            variant="outlined"
+            label="Gas Limit (genesis block)"
+            inputProps={{ 'aria-label': 'Gas Limit'}}
+            value={gasLimit}
+            onChange={(e) => setGasLimit(e.currentTarget.value)}
           />
           <br></br>
           <br></br>

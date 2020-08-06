@@ -1,0 +1,42 @@
+- name: create path
+  file:
+    path: "{{ destPath }}"
+    state: directory
+    mode: '0755'
+
+- name: copy scenarios files
+  copy:
+    src: "../../../"
+    dest: "{{ destPath }}"
+
+- name: install nvm
+  shell: >
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+- name: install node 10
+  shell: "nvm install 10"
+  args:
+    executable: bash
+
+- name: install ethers
+  npm:
+    name: ethers
+    path: "{{ destPath }}"
+
+- name: templating gen.js
+  template: src=gen.js.j2 dest={{ destPath }}/gen.js mode=0777
+
+- name: Templating txPerSec.js
+  template: src=txPerSec.js.j2 dest={{ destPath }}/txPerSec.js mode=0777
+
+- name: generate TXs
+  shell: "cd {{ destPath }} && node ./gen.js {{ time }}"
+  args:
+    executable: bash
+
+- name: send TXs
+  shell: "cd {{ destPath }} && node ./txPerSec.js {{ time }} {{ delay }}"
+  args:
+    executable: bash

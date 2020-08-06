@@ -4,66 +4,186 @@ var fs = require('fs');
 var fsPromise = require('fs').promises;
 var path = require('path');
 var shell = require('shelljs');
-const { schedulingPolicy } = require('cluster');
+const ethers = require('ethers');
 
 var scenariosDirectory = "./scenarios";
 
-function txPerSecTpl(time, priority, nbTx, timeBetween) {
-  return `
+function txPerSecTpl(time, priority, nbTx, timeBetween, wallets, it) {
+  let ips = JSON.parse(fs.readFileSync('./scenariosTpl/ips.json'));
+  let process = ``;
+  wallets.forEach((el, index) => {
+    process = process + `
   # ${nbTx} Tx spaced by ${timeBetween} at ${time}
-  s.enter(${time}, ${priority}, txPerSec, argument=(${timeBetween}, ${time}))`
+  s.enter(${time}, ${priority}, process, argument=(${timeBetween}, "${el.signingKey.address}.json", ${it}, "${ips.safeNodes[index%ips.safeNodes.length]}"))
+  `
+  });
+
+  return process;
 }
 
-function killNodeTpl(time, priority, nbNodes, bootnode, moc, validators, timeBeforeReUp) {
-  return `
-  #Kill ${nbNodes} Nodes at ${time} and reUp at ${timeBeforeReUp}
-  s.enter(${time}, ${priority}, killNodes, argument=(${nbNodes}, ${bootnode}, ${moc}, ${validators}, ${time} ))
-  s.enter(${time + timeBeforeReUp}, ${priority}, reUpNodes, argument=(${time},))`
+function killNodeTpl(time, priority, nbValidators, bootnode, validators, reUpAt) {
+  switch (bootnode) {
+    case true:
+      bootnode = "True";
+      break;
+    case false:
+      bootnode = "False"
+      break;
+    default:
+      break;
+  }
+  switch (validators) {
+    case true:
+      validators = "True";
+      break;
+    case false:
+      validators = "False"
+      break;
+    default:
+      break;
+  }
+  let ips = JSON.parse(fs.readFileSync('./scenariosTpl/ips.json'));
+  let res = ``;
+  let safeNodes = [];
+  safeNodes.push(ips.moc);
+  if(bootnode === "True") {
+    res = res + `
+  #Killing bootnode at ${time} and reUp at ${reUpAt}
+  s.enter(${time}, ${priority}, killNodes, argument=(${time}, "${ips.bootnode}"))
+  s.enter(${reUpAt}, ${priority}, reUpNodes, argument=(${time}, "${ips.bootnode}"))
+    `
+  } else {
+    safeNodes.push(ips.bootnode);
+  }
+  if(validators === "True") {
+    for (let i = 0; i < nbValidators; i++) {
+      res = res + `
+  #Killing ${ips.validators[i]} at ${time} and reUp at ${reUpAt}
+  s.enter(${time}, ${priority}, killNodes, argument=(${time}, "${ips.validators[i]}"))
+  s.enter(${reUpAt}, ${priority}, reUpNodes, argument=(${time}, "${ips.validators[i]}"))`
+    }
+    for (let i = ips.validators.length; i > nbValidators; i--) {
+      safeNodes.push(ips.validators[i - 1]);
+    }
+  }
+  ips["safeNodes"] = safeNodes;
+  fs.writeFileSync('./scenariosTpl/ips.json', JSON.stringify(ips));
+  return res;
 }
 
-function genTransactionsArray(nbTx, scenarioNumber, time) {
-  return new Promise((resolved) => {
-    let tx = [];
+function networkDegradeTpl(time, priority, nbValidators, bootnode, validators, restoreAt, latency, download, upload) {
+  switch (bootnode) {
+    case true:
+      bootnode = "True";
+      break;
+    case false:
+      bootnode = "False"
+      break;
+    default:
+      break;
+  }
+  switch (validators) {
+    case true:
+      validators = "True";
+      break;
+    case false:
+      validators = "False"
+      break;
+    default:
+      break;
+  }
+  let ips = JSON.parse(fs.readFileSync('./scenariosTpl/ips.json'));
+  let res = ``;
+  if(bootnode === "True") {
+    res = res + `
+  #Degrating bootnode Network at ${time} and restore at ${restoreAt}
+  s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.bootnode}", ${latency}, ${download}, ${upload}))
+  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.bootnode}", ${latency}, ${download}, ${upload}))
+    `
+  }
+  if(validators === "True") {
+    for (let i = 0; i < nbValidators; i++) {
+      res = res + `
+  #Degrating ${ips.validators[i]} Network at ${time} and restore at ${restoreAt}
+  s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))
+  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))`
+    }
+  }
+  return res;
+}
+
+function genTransactionsArray(nbTx, timeBetween2Tx, during, scenarioNumber) {
+  return new Promise((resolve, reject) => {
+    let tx = {};
     fsPromise.readFile(scenariosDirectory + "/" + scenarioNumber + "/wallets.json", (err) => {
       if (err) throw err;
     })
     .then(data => JSON.parse(data.toString()))
     .then((wallets) => {
-      for (let i = 0; i < nbTx; i++) {
-        tx.push({
-          'to': wallets[i%wallets.length].address,
-          'value': "0x0",
-          'nonce': wallets[i%wallets.length].nonce
-        })
-        wallets[i%wallets.length].nonce = wallets[i%wallets.length].nonce + 1;
-      }
+      wallets.forEach(el => {
+        tx[el.address] = {};
+        tx[el.address].txs = [];
+        tx[el.address].privKey = el.privKey;
+        tx[el.address].timeBetween2Tx = timeBetween2Tx;
+      });
+      wallets.forEach(el => {
+        let j = 0;
+        for (let i = 0; i < nbTx * during; i++) {
+          tx[el.address].txs.push({
+            'to': ethers.utils.hexlify(ethers.utils.randomBytes(20)),
+            'value': "0x0",
+            'nonce': Math.trunc(j)
+          });
+          j = j + 1;
+        }
+      });
     })
-    .then(() => resolved(tx))
+    .then(() => resolve(tx))
   })
 }
 
 router.post('/genScenario', function (req, res) {
   var events = [];
   var scenario = "";
-  req.body.events.forEach(event => {
+  req.body.events.forEach((event, it) => {
     switch (event.type) {
-      case 0:
-        events.push(txPerSecTpl(
-          event.time,
-          event.priority,
-          event.nbTx,
-          event.timeBetween2Tx
-        ));
-        break;
       case 1:
         events.push(killNodeTpl(
           event.time,
           event.priority,
           event.nbNodes,
           event.bootnode,
-          event.moc,
           event.validators,
-          event.timeBeforeReUp
+          event.reUpAt
+        ));
+        break;
+      case 2:
+        events.push(networkDegradeTpl(
+          event.time,
+          event.priority,
+          event.nbNodes,
+          event.bootnode,
+          event.validators,
+          event.restoreAt,
+          event.latency,
+          event.download,
+          event.upload
+        ));
+        break;
+      default:
+        break;
+    }
+  });
+  req.body.events.forEach((event, it) => {
+    switch (event.type) {
+      case 0:
+          events.push(txPerSecTpl(
+          event.time,
+          event.priority,
+          event.nbTx,
+          Math.trunc(100 / ((event.nbTx / req.body.wallets.length) / 10)),
+          req.body.wallets,
+          it
         ));
         break;
       default:
@@ -82,68 +202,89 @@ router.post('/genScenario', function (req, res) {
     }).then(() => {
       var data =
         `import sched, time, json
-from subprocess import call
+import subprocess
 
 s = sched.scheduler(time.time, time.sleep)
 
 def printTime(a='default'):
   print("From print_time", time.time(), a)
 
-def txPerSec(timeBetween, time):
-  print("txPerSec: " + str(time))
-  call(["node", "./txPerSec.js", str(time), str(timeBetween)])
+def process(timeBetween, fileName, eventNumber, ip):
+  print("process: " + str(eventNumber))
+  subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "node", "./process.js", str(fileName), str(timeBetween), str(eventNumber), str(ip)])
 
-def killNodes(nbNodes, bootnode, moc, validators, time):
-  print("KillNodes")
+def getResultTx(time, ip):
+  print("getResultsTx: " + str(time))
+  subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "node", "./postProcess.js", str(time)])
 
-def reUpNodes(time):
-  print("reUpNodes")
+def killNodes(time, ip):
+  print("KillNodes:" + str(time))
+  subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "service", "poa-parity", "stop"])
+
+def reUpNodes(time, ip):
+  print("reUpNodes:" + str(time))
+  subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "service", "poa-parity", "start"])
+
+def networkDegrade(time, ip, latency, download, upload):
+  print("networkDegrade:" + str(time))
+  if(latency != ""):
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "add", "dev", "enp68s0f0", "root", "netem", "delay", latency])
+  if(download or upload != "")
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "enp68s0f0", upload, download])
+
+def restoreNetwork(time, ip, latency, download, upload):
+  print("restoreNetwork:" + str(time))
+    if(latency != ""):
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "del", "dev", "enp68s0f0", "root", "netem"])
+  if(download or upload != "")
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "clear", "enp68s0f0"])
+
 
 def startScenario():
   print(time.time())
   ${scenario}
-  print(time.time())
   s.run()
 
 startScenario()
 `
-      fsPromise.writeFile(scenariosDirectory + "/" + (dirs.length + 1).toString() + "/scenario.py", data)
-      
+      fs.writeFileSync(scenariosDirectory + "/" + (dirs.length + 1).toString() + "/scenario.py", data)
+
       let filePath = scenariosDirectory + "/" + (dirs.length + 1).toString();
       shell.cp('./scenariosTpl/wallets.json', filePath + "/wallets.json")
       shell.cp('./scenariosTpl/ips.json', filePath + "/ips.json")
-      shell.cp('./scenariosTpl/txPerSec.js', filePath + "/txPerSec.js")
-      req.body.events.forEach(event => {
+      shell.cp('./scenariosTpl/postProcess.js', filePath + "/postProcess.js")
+      shell.cp('./scenariosTpl/process.js', filePath + "/process.js")
+
+      req.body.events.forEach(async (event, index) => {
         if(event.type === 0) {
-          genTransactionsArray(
-            event.nbTx, 
-            dirs.length + 1,
-            event.time
-          ).then(resolved => {
-            if(fs.existsSync(filePath + "/transactions.json")) {
-              fsPromise.readFile(filePath + "/transactions.json", (err) => {
-                if (err) throw err;
-              })
-              .then(data => {
-                data = JSON.parse(data.toString());
-                data[event.time] = {...data[event.time], 'interval': event.timeBetween2Tx, 'txs': resolved};
-                fsPromise.writeFile(filePath + "/transactions.json", JSON.stringify(data), (err2) => {
-                  if (err2) throw err2;
-                });
-              });
-            } else {
-              let base = {};
-              base[event.time] = {'interval': event.timeBetween2Tx, 'txs': resolved};
-              fsPromise.writeFile(filePath + "/transactions.json", JSON.stringify(base), (err2) => {
-                if (err2) throw err2;
-              });
+          let nbTx = event.nbTx / req.body.wallets.length;
+          let timeBetween2Tx = Math.trunc(100 / (nbTx / 10))
+          shell.mkdir(filePath + "/" + index);
+          let txArray = await genTransactionsArray(
+            nbTx, 
+            timeBetween2Tx,
+            event.during,
+            dirs.length + 1
+          )
+          req.body.wallets.forEach(async (el, it) => {
+            // var arrayFiles = JSON.stringify(txArray[el.signingKey.address])
+            var rawTxArray = [];
+            for (let i = 0; i < txArray[el.signingKey.address].txs.length; i++) {
+              rawTxArray.push(
+                new Promise (async (resolve, reject) => {
+                  let signer = new ethers.Wallet(txArray[el.signingKey.address].privKey);
+                  let raw = await signer.signTransaction({...txArray[el.signingKey.address].txs[i], 'gasPrice': 0, 'gasLimit': 21000});
+                  resolve(raw.toString());
+              }))
             }
-          })
+            Promise.all(rawTxArray).then(resolved => {
+              fs.writeFileSync(filePath + '/' + index + '/' + el.signingKey.address + '.json', JSON.stringify(resolved.slice(',')));
+            });
+          });
         }
       });
     })
-  })
-  .then(() => {
+  }).then(() => {
     res.send(JSON.stringify({type: "success", msg:"Scenario preparation generated"}));
   })
 });

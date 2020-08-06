@@ -1,0 +1,8 @@
+become_method: sudo
+destPath: "~/bench"
+scenariosFilesPath: '~/scenarios/X'
+wallet: ''
+providerIp: ''
+privKey: ''
+time: 0
+delay: 0

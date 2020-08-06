@@ -4,7 +4,8 @@ import { useTracked } from '../State';
 import stringify from 'fast-json-stable-stringify'
 
 import TxPerSec from '../../bench/TxPerSec'
-// import KillNodes from '../../bench/KillNodes'
+import KillNodes from '../../bench/KillNodes';
+import NetworkDegradation from '../../bench/NetworkDegradation'
 
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,7 +21,6 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
-import KillNodes from '../../bench/KillNodes';
 
 const useStyles = makeStyles(theme => ({
 	bottom: {
@@ -72,15 +72,14 @@ export default function Scenario() {
   const classes = useStyles();
   const express = "http://localhost:9000";
 
-  const TYPE_OF_SCENARIOS = ["Tx Per sec", "Kill Nodes", "Malicious Nodes"];
-  // const CONTENT_BY_TYPE = [<TxPerSec id={index}/>, <KillNodes/>]
+  const TYPE_OF_SCENARIOS = ["Tx Per sec", "Kill Nodes", "Network Degradation"];
 
   const [expanded, setExpanded] = useState(false);
   const [waitFetchBlock, setWaitFetchBlock] = useState(false);
 	const { enqueueSnackbar } = useSnackbar();
 	const [globalState, setGlobalState ] = useTracked();
   const [scenarioType, setScenarioType ] = useState(0);
-  const [time, setTime] = useState(1000);
+  const [time, setTime] = useState(10);
   const [scenarioName, setScenarioName] = useState("test");
 
   const handleChangePanel = panel => (event, isExpanded) => {
@@ -90,14 +89,7 @@ export default function Scenario() {
   function addEvent() {
     globalState.events.push({"type": scenarioType, "time": time})
     setScenarioType(0);
-    setTime(time+1);
-  }
-
-  function test() {
-  }
-
-  function validatorFiles() {
-
+    setTime(parseInt(time)+10);
   }
 
   function displayConfig() {
@@ -110,7 +102,8 @@ export default function Scenario() {
       headers: { 'Content-Type': 'application/json' },
       body: stringify({
         'events': globalState.events,
-        scenarioName
+        scenarioName,
+        'wallets': globalState.wallets
       })
     };
     fetch(express + '/scenario/genScenario', requestOptions)
@@ -137,14 +130,14 @@ export default function Scenario() {
           >
             <MenuItem value={0}>Transaction per seconds</MenuItem>
             <MenuItem value={1}>Killing nodes</MenuItem>
-            {/* <MenuItem value={2}>Malicious nodes</MenuItem> */}
+            <MenuItem value={2}>Network Degradation</MenuItem>
           </TextField>
           <TextField
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
-            label="At (ms)"
-            inputProps={{ 'aria-label': 'at (ms)'}}
+            label="At (s)"
+            inputProps={{ 'aria-label': 'at (s)'}}
             value={time}
             onChange={(e) => setTime(e.target.value)}
           />
@@ -176,7 +169,6 @@ export default function Scenario() {
           </ButtonGroup>
           <br></br>
         </Paper>
-        
       </div>
       <div className={classes.right}>
         <Paper variant="outlined" className={classes.container}>
@@ -191,7 +183,7 @@ export default function Scenario() {
 							<Typography noWrap className={classes.heading}>{"Event Type: " + TYPE_OF_SCENARIOS[el.type] + " | At: " + el.time + "sec"}</Typography>
 						</ExpansionPanelSummary>
 						<ExpansionPanelDetails>
-              { el.type === 0 ? <TxPerSec id={index}/> : <KillNodes id={index}/>}
+              { el.type === 0 ? <TxPerSec id={index}/> : el.type === 1 ? <KillNodes id={index}/> : <NetworkDegradation id={index}/>}
 						</ExpansionPanelDetails>
 					</ExpansionPanel>
 					))}

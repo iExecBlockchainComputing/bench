@@ -199,11 +199,10 @@ export default function WalletManager() {
 	}
 
 	function deleteAllWallets() {
-		console.log(Math.trunc(globalState.wallets.length/50));
-		// fetch( globalState.expressServer + "/wallets/deleteAll")
-		// .then(res => res.text())
-		// .then(res => enqueueSnackbar(JSON.parse(res).msg, {variant: JSON.parse(res).type}));
-		// setGlobalState({wallets: []});
+		fetch( globalState.expressServer + "/wallets/deleteAll")
+		.then(res => res.text())
+		.then(res => enqueueSnackbar(JSON.parse(res).msg, {variant: JSON.parse(res).type}));
+		setGlobalState({wallets: []});
 	}
 
 	function fillAllWallets() {

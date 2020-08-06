@@ -6,6 +6,7 @@ var path = require('path');
 var async = require('async');
 var shell = require('shelljs');
 var yml = require('yaml');
+var ethers = require('ethers')
 
 router.post('/poaMocGroup', function(req, res) {
   var path = "./repos/poa-deployment-bench/";
@@ -19,9 +20,8 @@ router.post('/poaMocGroup', function(req, res) {
     shell.cp('./repos/poa-deployment-bench/group_vars_tpl/*', './repos/poa-deployment-bench/group_vars/');
     
     //Modifying groups
-    fsPromise.readFile('./encryptedWallet/wallet.json', 'utf8', (err) => {
-      if(err) throw err;
-    }).then(encryptedWallet => {
+    let mainWallet = new ethers.Wallet("0xaadbffbda78a7b1e7e98acb801cfe9fac326f0ce0c9c90a48fc9535fb83d7b76");
+    mainWallet.encrypt('whatever').then(encryptedWallet => {
       //bootnode
       fsPromise.readFile(path + 'group_vars_tpl/poa-bootnode-group.yml', "utf8", (err2) => {
         if(err2) throw err2;
@@ -35,7 +35,6 @@ router.post('/poaMocGroup', function(req, res) {
         bootnodeParsed.MOC_ADDRESS = req.body.mocAddress;
         bootnodeParsed.NODE_FULLNAME = req.body.chainName + '-bootnode';
         bootnodeParsed.NODE_ADMIN_EMAIL = req.body.mail;
-        // bootnodeParsed.NETSTATS_SERVER = req.body.netstatIp;
       }).then(() => {
         bootnodeParsed = yml.stringify(bootnodeParsed);
       }).then(() => {
@@ -43,31 +42,6 @@ router.post('/poaMocGroup', function(req, res) {
           if(err3) throw err3;
         })
       })
-
-      req.body.otherHost.forEach((el, index) => {
-        fsPromise.readFile(path + 'group_vars_tpl/poa-validator-group.yml', "utf8", (err2) => {
-          if(err2) throw err2;
-        }).then(data => {
-          validatorParsed = yml.parse(data);
-        }).then(() => {
-          validatorParsed.SCRIPTS_MOC_BRANCH = req.body.chainName + '-init';
-          validatorParsed.MAIN_CHAINSPEC_REPO_FETCH = req.body.repoFetch;
-          validatorParsed.GENESIS_BRANCH = req.body.chainName;
-          validatorParsed.GENESIS_NETWORK_NAME = req.body.chainName;
-          validatorParsed.MOC_ADDRESS = req.body.mocAddress;
-          validatorParsed.NODE_FULLNAME = req.body.chainName + '-validator' + index;
-          validatorParsed.NODE_ADMIN_EMAIL = req.body.mail;
-          validatorParsed.bootnode_host = req.body.bootnodeHost;
-          // validatorParsed.NETSTATS_SERVER = req.body.netstatIp;
-        }).then(() => {
-          validatorParsed = yml.stringify(validatorParsed);
-        }).then(() => {
-          fsPromise.writeFile(path + 'group_vars/poa-' + index + '-group.yml', validatorParsed, (err3) => {
-            if(err3) throw err3;
-          })
-        })
-      });
-
       //MOC
       fsPromise.readFile(path + 'group_vars_tpl/poa-moc-group.yml', "utf8", (err2) => {
         if(err2) throw err2;
@@ -82,7 +56,6 @@ router.post('/poaMocGroup', function(req, res) {
         mocParsed.NODE_FULLNAME = req.body.chainName + '-moc';
         mocParsed.NODE_ADMIN_EMAIL = req.body.mail;
         mocParsed.bootnode_host = req.body.bootnodeHost;
-        // mocParsed.NETSTATS_SERVER = req.body.netstatIp;
         mocParsed.MOC_KEYFILE = encryptedWallet;
       }).then(() => {
         mocParsed = yml.stringify(mocParsed);
@@ -144,18 +117,47 @@ ansible_ssh_user=root
 ansible_sudo_pass="" ` + "\n";
             });
             var hosts = permanent + "\n" + validators + "\n" + ubuntu + "\n" + moc + "\n" + bootnode + "\n" + eof;
-          
+
             fsPromise.writeFile( "./repos/poa-deployment-bench/hosts", hosts, (err4) => {
               if(err4) throw err4;
             }).then(() => {
-              res.send();
-            })
+              // validators
+              req.body.otherHost.forEach((el, index) => {
+                let validatorWallet = new ethers.Wallet(req.body.wallets[index].signingKey.privateKey);
+                validatorWallet.encrypt('whatever').then(validatorEncrypted => {
+                fsPromise.readFile(path + 'group_vars_tpl/poa-validator-group.yml', "utf8", (err2) => {
+                  if(err2) throw err2;
+                }).then(data => {
+                  validatorParsed = yml.parse(data);
+                }).then(() => {
+                  validatorParsed.SCRIPTS_MOC_BRANCH = req.body.chainName + '-init';
+                  validatorParsed.MAIN_CHAINSPEC_REPO_FETCH = req.body.repoFetch;
+                  validatorParsed.GENESIS_BRANCH = req.body.chainName;
+                  validatorParsed.GENESIS_NETWORK_NAME = req.body.chainName;
+                  validatorParsed.MOC_ADDRESS = req.body.mocAddress;
+                  validatorParsed.NODE_FULLNAME = req.body.chainName + '-validator' + index;
+                  validatorParsed.NODE_ADMIN_EMAIL = req.body.mail;
+                  validatorParsed.bootnode_host = req.body.bootnodeHost;
+                  validatorParsed.KEYS_MANAGER_ADDRESS = req.body.wallets[index].signingKey.address;
+                  validatorParsed.MINING_ADDRESS = req.body.wallets[index].signingKey.address;
+                  validatorParsed.MIN_GAS_PRICE = 0;
+                  validatorParsed.MINING_KEYFILE = validatorEncrypted;
+                }).then(() => {
+                  validatorParsed = yml.stringify(validatorParsed);
+                }).then(() => {
+                  fsPromise.writeFile(path + 'group_vars/poa-' + index + '-group.yml', validatorParsed, (err3) => {
+                    if(err3) throw err3;
+                  }).then(() => {
+                    res.send();
+                  })
+                })
+              })
+            });
+          })
         })
       })
     })
-
   })
-
 });
 
 router.post('/genSpec', function(req, res) {
@@ -168,10 +170,23 @@ router.post('/genSpec', function(req, res) {
 })
 
 router.post('/genScenarioData', function(req, res) {
+  let all = [];
+  all.push(req.body.bootnodeIP);
+  all.push(req.body.mocIP);
+  req.body.validatorsIP.forEach(el => {
+    all.push(el);
+  });
+  let noBootnode = [];
+  noBootnode.push(req.body.mocIP);
+  req.body.validatorsIP.forEach(el => {
+    noBootnode.push(el);
+  });
   var ips = {
     'bootnode': req.body.bootnodeIP,
     'moc': req.body.mocIP,
-    'validators': req.body.otherHostIP
+    'validators': req.body.validatorsIP,
+    'all': all,
+    'noBootnode': noBootnode
   };
 
   fsPromise.writeFile('./scenariosTpl/ips.json', JSON.stringify(ips), (err) => {

@@ -19,11 +19,11 @@ const useStyles = makeStyles(theme => ({
 export default function KillNodes(props) {
   const classes = useStyles();
 
-	const [ timeBeforeReUp, setTimeBeforeReUp ] = useState(100);
+	const [ reUpAt, setReUpAt ] = useState(100);
   const [ priority, setPriority ] = useState(1);
-  const [ nbNodes, setNbNodes ] = useState(2);
+  const [ nbNodes, setNbNodes ] = useState(1);
   const [ bootnode, setBootnode ] = useState(false);
-  const [ moc, setMoc ] = useState(false);
+  // const [ moc, setMoc ] = useState(false);
   const [ validators, setValidators ] = useState(true);
   const [ globalState, setGlobalState ] = useTracked();
 
@@ -31,10 +31,9 @@ export default function KillNodes(props) {
     globalState.events[props.id] = {
       ...globalState.events[props.id],
       priority,
-      timeBeforeReUp,
+      reUpAt,
       nbNodes,
       bootnode,
-      moc, 
       validators
     };
   }, []);
@@ -47,13 +46,13 @@ export default function KillNodes(props) {
     };
   }
 
-  function _setMoc(event) {
-    setMoc(event.target.checked);
-    globalState.events[props.id] = {
-      ...globalState.events[props.id], 
-      "moc": event.target.checked
-    };
-  }
+  // function _setMoc(event) {
+  //   setMoc(event.target.checked);
+  //   globalState.events[props.id] = {
+  //     ...globalState.events[props.id], 
+  //     "moc": event.target.checked
+  //   };
+  // }
 
   function _setValidators(event) {
     setValidators(event.target.checked);
@@ -63,8 +62,8 @@ export default function KillNodes(props) {
     };
   }
 
-  function _setTimeBeforeReUp(value) {
-    setTimeBeforeReUp(value);
+  function _setReUpAt(value) {
+    setReUpAt(value);
     globalState.events[props.id].timeBeforeReUp = value;
   }
 
@@ -85,17 +84,17 @@ export default function KillNodes(props) {
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label="Time before reUp nodes"
+        label="reUp nodes at"
         inputProps={{ 'aria-label': ''}}
-        value={timeBeforeReUp}
-        onChange={(e) => _setTimeBeforeReUp(e.target.value)}
+        value={reUpAt}
+        onChange={(e) => _setReUpAt(e.target.value)}
       />
       <br></br>
       <TextField
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label="Number of Down nodes"
+        label="Number of Down validators"
         inputProps={{ 'aria-label': ''}}
         value={nbNodes}
         onChange={(e) => _setNbNodes(e.target.value)}
@@ -122,17 +121,6 @@ export default function KillNodes(props) {
           />
         }
         label="Bootnode"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={moc}
-            onChange={_setMoc}
-            name="moc"
-            color="primary"
-          />
-        }
-        label="Moc"
       />
       <FormControlLabel
         control={

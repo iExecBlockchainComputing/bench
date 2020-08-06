@@ -15,13 +15,17 @@ const useStyles = makeStyles(theme => ({
 export default function TxPerSec(props) {
   const classes = useStyles();
 
-	const [ nbTx, setNbTx ] = useState("2000");
-	const [ timeBetween2Tx, setTimeBetween2Tx ] = useState("1");
+	const [ nbTx, setNbTx ] = useState("67");
+	const [ during, setDuring ] = useState("30");
 	const [ priority, setPriority ] = useState("1");
 	const [ globalState, setGlobalState ] = useTracked();
 
   useEffect(() => {
-		globalState.events[props.id] = {...globalState.events[props.id], "priority": priority, "timeBetween2Tx": timeBetween2Tx, "nbTx": nbTx};
+    globalState.events[props.id] = {...globalState.events[props.id], 
+      "priority": priority, 
+      "during": during, 
+      "nbTx": nbTx
+    };
   }, []);
 
   function _setNbTx(value) {
@@ -29,9 +33,9 @@ export default function TxPerSec(props) {
     globalState.events[props.id].nbTx = value;
   }
 
-  function _setTimeBetween2Tx(value) {
-    setTimeBetween2Tx(value);
-    globalState.events[props.id].timeBetween2Tx = value;
+  function _setDuring(value) {
+    setDuring(value);
+    globalState.events[props.id].during = value;
   }
   
   function _setPriority(value) {
@@ -46,7 +50,7 @@ export default function TxPerSec(props) {
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label="Number of transaction"
+        label="Transaction per Sec"
         inputProps={{ 'aria-label': ''}}
         value={nbTx}
         onChange={(e) => _setNbTx(e.target.value)}
@@ -56,10 +60,10 @@ export default function TxPerSec(props) {
         className={classes.textField}
         id="outlined-basic"
         variant="outlined"
-        label="Time between 2 transactions (s)"
+        label="During time (s)"
         inputProps={{ 'aria-label': ''}}
-        value={timeBetween2Tx}
-        onChange={(e) => _setTimeBetween2Tx(e.target.value)}
+        value={during}
+        onChange={(e) => _setDuring(e.target.value)}
       />
       <br></br>
       <TextField

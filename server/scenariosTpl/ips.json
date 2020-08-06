@@ -1,1 +1,1 @@
-{"bootnode":"localhost","moc":"localhost"}
+{"bootnode":"bootnode","moc":"moc","validators":["v1","v2","v3"],"all":["bootnode","moc","v1","v2","v3"],"noBootnode":["moc","v1","v2","v3"],"safeNodes":["moc","bootnode","v3","v2"]}

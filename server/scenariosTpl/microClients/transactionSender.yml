@@ -1,0 +1,4 @@
+- hosts: transactionSender
+  become: True
+  roles:
+    - transactionSender
