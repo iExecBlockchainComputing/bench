@@ -64,7 +64,7 @@ export default function KillNodes(props) {
 
   function _setReUpAt(value) {
     setReUpAt(value);
-    globalState.events[props.id].timeBeforeReUp = value;
+    globalState.events[props.id].reUpAt = value;
   }
 
   function _setNbNodes(value) {

@@ -103,6 +103,9 @@ export default function Bar() {
       <ListItemIcon><AccountBalanceWalletIcon/></ListItemIcon>
         <ListItemText primary="Wallet Manager"/>
       </ListItem>
+      <ListItem button key="Generate real transactions" onClick={() => handleChangePage("initiation")}>
+        <ListItemText primary="Generate real transactions"/>
+      </ListItem>
       <Divider/>
       <ListItem button key="PoA Network" onClick={() => handleChangePage("poaNetwork")}>
         <ListItemText primary="PoA Network"/>

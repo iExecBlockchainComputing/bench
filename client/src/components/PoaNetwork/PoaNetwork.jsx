@@ -220,6 +220,7 @@ export default function PoaNetwork() {
 
   function genSpec(validators) {
     spec.name = chainName;
+    console.log(validators.length);
     if(globalState.wallets.length === 0) {
       enqueueSnackbar("please add wallets", {variant: "error"})
     } else {
@@ -242,7 +243,10 @@ export default function PoaNetwork() {
   }
 
   function displayConfig() {
-    setLogs(stringify(spec))
+    // setLogs(stringify(spec))
+    // globalState.wallets.forEach(el => {
+    //   console.log(el.signingKey.address)
+    // });
   }
 
   return (

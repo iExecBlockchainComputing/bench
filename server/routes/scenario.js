@@ -12,10 +12,17 @@ function txPerSecTpl(time, priority, nbTx, timeBetween, wallets, it) {
   let ips = JSON.parse(fs.readFileSync('./scenariosTpl/ips.json'));
   let process = ``;
   wallets.forEach((el, index) => {
-    process = process + `
+    if(ips.safeNodes != null) {
+      process = process + `
   # ${nbTx} Tx spaced by ${timeBetween} at ${time}
   s.enter(${time}, ${priority}, process, argument=(${timeBetween}, "${el.signingKey.address}.json", ${it}, "${ips.safeNodes[index%ips.safeNodes.length]}"))
   `
+    } else {
+      process = process + `
+  # ${nbTx} Tx spaced by ${timeBetween} at ${time}
+  s.enter(${time}, ${priority}, process, argument=(${timeBetween}, "${el.signingKey.address}.json", ${it}, "${ips.noBootnode[index%ips.noBootnode.length]}"))
+  `
+    }
   });
 
   return process;
@@ -106,7 +113,8 @@ function networkDegradeTpl(time, priority, nbValidators, bootnode, validators, r
       res = res + `
   #Degrating ${ips.validators[i]} Network at ${time} and restore at ${restoreAt}
   s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))
-  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))`
+  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))
+  `
     }
   }
   return res;
@@ -191,7 +199,7 @@ router.post('/genScenario', function (req, res) {
     }
   });
   events.forEach(event => {
-    scenario = scenario + `${event}
+      scenario = scenario + `${event}
 `
   });
   fsPromise.readdir(scenariosDirectory, (err, dirs) => {
@@ -227,16 +235,16 @@ def reUpNodes(time, ip):
 
 def networkDegrade(time, ip, latency, download, upload):
   print("networkDegrade:" + str(time))
-  if(latency != ""):
-    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "add", "dev", "enp68s0f0", "root", "netem", "delay", latency])
-  if(download or upload != "")
-    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "enp68s0f0", upload, download])
+  if(latency or packetLoss != ""):
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "add", "dev", "enp68s0f0", "root", "netem", "delay", str(latency)])
+  if(download or upload != ""):
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "enp68s0f0", str(upload), str(download)])
 
 def restoreNetwork(time, ip, latency, download, upload):
   print("restoreNetwork:" + str(time))
-    if(latency != ""):
+  if(latency or packetLoss != ""):
     subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "del", "dev", "enp68s0f0", "root", "netem"])
-  if(download or upload != "")
+  if(download or upload != ""):
     subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "clear", "enp68s0f0"])
 
 
@@ -248,7 +256,6 @@ def startScenario():
 startScenario()
 `
       fs.writeFileSync(scenariosDirectory + "/" + (dirs.length + 1).toString() + "/scenario.py", data)
-
       let filePath = scenariosDirectory + "/" + (dirs.length + 1).toString();
       shell.cp('./scenariosTpl/wallets.json', filePath + "/wallets.json")
       shell.cp('./scenariosTpl/ips.json', filePath + "/ips.json")

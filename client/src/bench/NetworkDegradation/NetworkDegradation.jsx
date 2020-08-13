@@ -27,6 +27,7 @@ export default function NetworkDegradation(props) {
   const [ latency, setLatency ] = useState(100);
   const [ download, setDownload ] = useState(1024);
   const [ upload, setUpload ] = useState(1024);
+  const [ packetLoss, setPacketLoss ] = useState(0);
   const [ globalState, setGlobalState ] = useTracked();
 
   useEffect(() => {
@@ -39,7 +40,8 @@ export default function NetworkDegradation(props) {
       validators,
       latency,
       download,
-      upload
+      upload,
+      packetLoss
     };
   }, []);
 
@@ -87,6 +89,11 @@ export default function NetworkDegradation(props) {
   function _setUpload(value) {
     setUpload(value);
     globalState.events[props.id].upload = value;
+  }
+
+  function _setPacketLoss(value) {
+    setPacketLoss(value);
+    globalState.events[props.id].packetLoss = value;
   }
 
 	return (
@@ -150,6 +157,16 @@ export default function NetworkDegradation(props) {
         inputProps={{ 'aria-label': ''}}
         value={upload}
         onChange={(e) => _setUpload(e.target.value)}
+      />
+      <br></br>
+      <TextField
+        className={classes.textField}
+        id="outlined-basic"
+        variant="outlined"
+        label="Packet Loss (%)"
+        inputProps={{ 'aria-label': ''}}
+        value={packetLoss}
+        onChange={(e) => _setPacketLoss(e.target.value)}
       />
       <br></br>
       <h5>Type of nodes</h5>

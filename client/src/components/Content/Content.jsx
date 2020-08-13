@@ -4,6 +4,7 @@ import { useTracked } from '../State';
 import WalletManager from '../WalletManager';
 import PoaNetwork from '../PoaNetwork'
 import Scenario from '../Scenario'
+import Initiation from '../Initiation'
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -25,6 +26,8 @@ export default function Content(props) {
         return <PoaNetwork/>;
       case "scenario":
         return <Scenario/>;
+      case "initiation":
+        return <Initiation/>;
       default:
         return <WalletManager/>;
     }
