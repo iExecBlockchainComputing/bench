@@ -281,7 +281,7 @@ export default function Initiation() {
 
   return (
     <div>
-      <h1>Bench Initiation</h1>
+      <h1>Get blockchain history</h1>
       <div className={classes.left}>
         <Paper variant="outlined" className={classes.container}>
           <h4>Parameters:</h4>
@@ -294,7 +294,7 @@ export default function Initiation() {
             value={ethNodeSrcURL}
             onChange={(e) => setEthNodeSrcURL(e.currentTarget.value)}
           />
-          <TextField
+          {/* <TextField
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
@@ -302,6 +302,15 @@ export default function Initiation() {
             inputProps={{ 'aria-label': 'enter dest node url'}}
             value={ethNodeDestURL}
             onChange={(e) => setEthNodeDestURL(e.currentTarget.value)}
+          /> */}
+          <TextField
+            className={classes.textField}
+            id="outlined-basic"
+            variant="outlined"
+            label="Chain ID dest"
+            inputProps={{ 'aria-label': 'chain id dest'}}
+            value={chainIdDest}
+            onChange={(e) => setChainIdDest(e.currentTarget.value)}
           />
           <br></br>
           <TextField
@@ -323,15 +332,6 @@ export default function Initiation() {
             onChange={(e) => _setEndBlock(e.currentTarget.value)}
           />
           <br></br>
-          <TextField
-            className={classes.textField}
-            id="outlined-basic"
-            variant="outlined"
-            label="Chain ID dest"
-            inputProps={{ 'aria-label': 'chain id dest'}}
-            value={chainIdDest}
-            onChange={(e) => setChainIdDest(e.currentTarget.value)}
-          />
           <br></br>
           <ButtonGroup
             orientation="horizontal"

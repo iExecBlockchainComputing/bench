@@ -264,7 +264,7 @@ export default function PoaNetwork() {
             value={chainName}
             onChange={(e) => setChainName(e.currentTarget.value)}
           />
-          <TextField
+          {/* <TextField
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
@@ -272,8 +272,8 @@ export default function PoaNetwork() {
             inputProps={{ 'aria-label': 'your git repo'}}
             value={repoFetch}
             onChange={(e) => setRepoFetch(e.currentTarget.value)}
-          />
-          <TextField
+          /> */}
+          {/* <TextField
             className={classes.textField}
             id="outlined-basic"
             variant="outlined"
@@ -281,7 +281,7 @@ export default function PoaNetwork() {
             inputProps={{ 'aria-label': 'email address'}}
             value={mail}
             onChange={(e) => setMail(e.currentTarget.value)}
-          />
+          /> */}
           <TextField
             className={classes.textField}
             id="outlined-basic"

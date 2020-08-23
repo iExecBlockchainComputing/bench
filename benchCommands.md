@@ -1,7 +1,7 @@
 # Starting Bench 
 
 frontend$ 
-oarsub -I -l "nodes=62,walltime=03:00:00" -t deploy -p "cluster='gros'"
+oarsub -I -l "nodes=32,walltime=03:00:00" -t deploy -p "cluster='gros'"
 
 frontend$ 
 kadeploy3 -f $OAR_FILE_NODES -e debian10-x64-base -k ~/.ssh/bench.pub
@@ -13,10 +13,10 @@ host$
 scp -r ./scenarios/* npayre@frontend.lyon.grid5000.fr:.
 
 frontend$ 
-scp -r -i .ssh/bench .ssh/bench* root@gros-5.nancy.grid5000.fr:.ssh/
+scp -r -i .ssh/bench .ssh/bench* root@nova-1.lyon.grid5000.fr:.ssh/
 
 frontend$ 
-scp -r -i .ssh/bench poa-deployment-bench/ root@gros-5.nancy.grid5000.fr:.
+scp -r -i .ssh/bench poa-deployment-bench/ root@nova-1.lyon.grid5000.fr:.
  
 
 frontend$
@@ -29,22 +29,16 @@ frontend$
 taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "apt update && apt install ansible -y" ]
 
 frontend$
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast put { ./? } { ./ }
+taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast put { ./11 } { ./ }
 
 frontend$ 
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "mv ./?/* ." ]
-
-frontend$ 
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "mkdir /tmp/logs" ]
-
-frontend$ 
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "chmod 777 /tmp/logs" ]
+taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "mv ./11/* ." ]
 
 moc$ 
 export ANSIBLE_HOST_KEY_CHECKING=False
 
 moc$ 
-ansible-playbook -i hosts -f 20 site.yml
+ansible-playbook -i hosts -f 60 site.yml
 
 frontend$ 
 taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "npm i ethers" ]
@@ -55,10 +49,9 @@ frontend$
 mkdir results
 
 frontend$ 
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast get { ./? } { ./results/ }
+taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast get { ./0 } { ./ }
 
 frontend$ 
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast get { /tmp/logs/ } { ./results/ }
+taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast get { /tmp/logs/ } { ./ }
 
 host$ scp -r npayre@frontend.lyon.grid5000.fr:./results ./saves/name
-

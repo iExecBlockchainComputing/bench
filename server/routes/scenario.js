@@ -78,7 +78,7 @@ function killNodeTpl(time, priority, nbValidators, bootnode, validators, reUpAt)
   return res;
 }
 
-function networkDegradeTpl(time, priority, nbValidators, bootnode, validators, restoreAt, latency, download, upload) {
+function networkDegradeTpl(time, priority, nbValidators, bootnode, validators, restoreAt, latency, download, upload, packetLoss) {
   switch (bootnode) {
     case true:
       bootnode = "True";
@@ -104,16 +104,16 @@ function networkDegradeTpl(time, priority, nbValidators, bootnode, validators, r
   if(bootnode === "True") {
     res = res + `
   #Degrating bootnode Network at ${time} and restore at ${restoreAt}
-  s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.bootnode}", ${latency}, ${download}, ${upload}))
-  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.bootnode}", ${latency}, ${download}, ${upload}))
+  s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.bootnode}", "${latency}", "${download}", "${upload}", "${packetLoss}"))
+  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.bootnode}", "${latency}", "${download}", "${upload}", "${packetLoss}"))
     `
   }
   if(validators === "True") {
     for (let i = 0; i < nbValidators; i++) {
       res = res + `
   #Degrating ${ips.validators[i]} Network at ${time} and restore at ${restoreAt}
-  s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))
-  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}"))
+  s.enter(${time}, ${priority}, networkDegrade, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}", "${packetLoss}"))
+  s.enter(${restoreAt}, ${priority}, restoreNetwork, argument=(${time}, "${ips.validators[i]}", "${latency}", "${download}", "${upload}", "${packetLoss}"))
   `
     }
   }
@@ -175,7 +175,8 @@ router.post('/genScenario', function (req, res) {
           event.restoreAt,
           event.latency,
           event.download,
-          event.upload
+          event.upload,
+          event.packetLoss
         ));
         break;
       default:
@@ -233,19 +234,20 @@ def reUpNodes(time, ip):
   print("reUpNodes:" + str(time))
   subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "service", "poa-parity", "start"])
 
-def networkDegrade(time, ip, latency, download, upload):
+def networkDegrade(time, ip, latency, download, upload, packetLoss):
   print("networkDegrade:" + str(time))
   if(latency or packetLoss != ""):
-    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "add", "dev", "enp68s0f0", "root", "netem", "delay", str(latency)])
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc qdisc add dev enp5s0f0 root netem delay " + str(latency) + "ms"])
   if(download or upload != ""):
-    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "enp68s0f0", str(upload), str(download)])
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper enp5s0f0 " + str(upload) + " " + str(download)])
 
-def restoreNetwork(time, ip, latency, download, upload):
+def restoreNetwork(time, ip, latency, download, upload, packetLoss):
   print("restoreNetwork:" + str(time))
   if(latency or packetLoss != ""):
-    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc", "qdisc", "del", "dev", "enp68s0f0", "root", "netem"])
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "tc qdisc del dev enp5s0f0 root netem"])
   if(download or upload != ""):
-    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper", "clear", "enp68s0f0"])
+    subprocess.Popen(["ssh", "-i", "~/.ssh/bench", "root@" + ip, "wondershaper clear enp5s0f0"])
+
 
 
 def startScenario():

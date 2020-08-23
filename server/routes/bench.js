@@ -125,32 +125,32 @@ ansible_sudo_pass="" ` + "\n";
               req.body.otherHost.forEach((el, index) => {
                 let validatorWallet = new ethers.Wallet(req.body.wallets[index].signingKey.privateKey);
                 validatorWallet.encrypt('whatever').then(validatorEncrypted => {
-                fsPromise.readFile(path + 'group_vars_tpl/poa-validator-group.yml', "utf8", (err2) => {
-                  if(err2) throw err2;
-                }).then(data => {
-                  validatorParsed = yml.parse(data);
-                }).then(() => {
-                  validatorParsed.SCRIPTS_MOC_BRANCH = req.body.chainName + '-init';
-                  validatorParsed.MAIN_CHAINSPEC_REPO_FETCH = req.body.repoFetch;
-                  validatorParsed.GENESIS_BRANCH = req.body.chainName;
-                  validatorParsed.GENESIS_NETWORK_NAME = req.body.chainName;
-                  validatorParsed.MOC_ADDRESS = req.body.mocAddress;
-                  validatorParsed.NODE_FULLNAME = req.body.chainName + '-validator' + index;
-                  validatorParsed.NODE_ADMIN_EMAIL = req.body.mail;
-                  validatorParsed.bootnode_host = req.body.bootnodeHost;
-                  validatorParsed.KEYS_MANAGER_ADDRESS = req.body.wallets[index].signingKey.address;
-                  validatorParsed.MINING_ADDRESS = req.body.wallets[index].signingKey.address;
-                  validatorParsed.MIN_GAS_PRICE = 0;
-                  validatorParsed.MINING_KEYFILE = validatorEncrypted;
-                }).then(() => {
-                  validatorParsed = yml.stringify(validatorParsed);
-                }).then(() => {
-                  fsPromise.writeFile(path + 'group_vars/poa-' + index + '-group.yml', validatorParsed, (err3) => {
-                    if(err3) throw err3;
+                  fsPromise.readFile(path + 'group_vars_tpl/poa-validator-group.yml', "utf8", (err2) => {
+                    if(err2) throw err2;
+                  }).then(data => {
+                    validatorParsed = yml.parse(data);
                   }).then(() => {
-                    res.send();
+                    validatorParsed.SCRIPTS_MOC_BRANCH = req.body.chainName + '-init';
+                    validatorParsed.MAIN_CHAINSPEC_REPO_FETCH = req.body.repoFetch;
+                    validatorParsed.GENESIS_BRANCH = req.body.chainName;
+                    validatorParsed.GENESIS_NETWORK_NAME = req.body.chainName;
+                    validatorParsed.MOC_ADDRESS = req.body.mocAddress;
+                    validatorParsed.NODE_FULLNAME = req.body.chainName + '-validator' + index;
+                    validatorParsed.NODE_ADMIN_EMAIL = req.body.mail;
+                    validatorParsed.bootnode_host = req.body.bootnodeHost;
+                    validatorParsed.KEYS_MANAGER_ADDRESS = req.body.wallets[index].signingKey.address;
+                    validatorParsed.MINING_ADDRESS = req.body.wallets[index].signingKey.address;
+                    validatorParsed.MIN_GAS_PRICE = 0;
+                    validatorParsed.MINING_KEYFILE = validatorEncrypted;
+                  }).then(() => {
+                    validatorParsed = yml.stringify(validatorParsed);
+                  }).then(() => {
+                    fsPromise.writeFile(path + 'group_vars/poa-' + index + '-group.yml', validatorParsed, (err3) => {
+                      if(err3) throw err3;
+                    }).then(() => {
+                      res.send();
+                    })
                   })
-                })
               })
             });
           })

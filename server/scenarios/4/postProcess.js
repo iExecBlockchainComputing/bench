@@ -7,7 +7,6 @@ const ips = JSON.parse(fs.readFileSync('./ips.json'));
 const provider = new ethers.providers.JsonRpcProvider("http://" + ips.moc + ":8545")
 
 var args = process.argv.slice(2);
-// var fileName = args[0];
 var eventNumber = args[0];
 
 var filesName = fs.readdirSync(eventNumber);
@@ -17,6 +16,7 @@ fs.mkdirSync("./results");
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 
 filesName.forEach(fileName => {
 	Promise.all(
@@ -48,5 +48,6 @@ filesName.forEach(fileName => {
 				}))
 			))
 		})
+		sleep(100);
 	})
 });

@@ -1,0 +1,140 @@
+2020-08-15 11:28:53  Starting Parity-Ethereum/v2.5.8-stable-c52a6c8-20190916/x86_64-linux-gnu/rustc1.36.0
+2020-08-15 11:28:53  Keys path parity_data/keys/test
+2020-08-15 11:28:53  DB path parity_data/chains/test/db/6ee9bda2387a2ab0
+2020-08-15 11:28:53  State DB configuration: fast
+2020-08-15 11:28:53  Operating mode: active
+2020-08-15 11:28:53  Configured for test using AuthorityRound engine
+2020-08-15 11:28:53  Public node URL: enode://84f7eb7ebe4f7588d9eda526b21adb52d6a7a41c22e84cbdceb013007571ed7bf4e49755ea98432a2a8e6fe8df6b712b932320ef5da2043059cff7867b27cdda@172.16.66.7:30303
+2020-08-15 11:28:53  Listening for new connections on 0.0.0.0:8546.
+2020-08-15 11:29:28     0/25 peers   832 bytes chain    4 KiB db  0 bytes queue 448 bytes sync  RPC:  0 conn,    0 req/s,    0 µs
+2020-08-15 11:29:58     0/25 peers   832 bytes chain    4 KiB db  0 bytes queue 448 bytes sync  RPC:  0 conn,    0 req/s,   20 µs
+2020-08-15 11:30:28     0/25 peers   832 bytes chain    4 KiB db  0 bytes queue 448 bytes sync  RPC:  0 conn,    0 req/s,   20 µs
+2020-08-15 11:30:58     0/25 peers   832 bytes chain    4 KiB db  0 bytes queue 448 bytes sync  RPC:  0 conn,    0 req/s,   20 µs
+2020-08-15 11:31:28     0/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   20 µs
+2020-08-15 11:31:58     0/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   20 µs
+2020-08-15 11:32:05  Finishing work, please wait...
+2020-08-15 11:32:05  unable to get mut ref for engine for shutdown.
+2020-08-15 11:32:06  Starting Parity-Ethereum/v2.5.8-stable-c52a6c8-20190916/x86_64-linux-gnu/rustc1.36.0
+2020-08-15 11:32:06  Keys path parity_data/keys/test
+2020-08-15 11:32:06  DB path parity_data/chains/test/db/6ee9bda2387a2ab0
+2020-08-15 11:32:06  State DB configuration: fast
+2020-08-15 11:32:06  Operating mode: active
+2020-08-15 11:32:06  Configured for test using AuthorityRound engine
+2020-08-15 11:32:06  Public node URL: enode://84f7eb7ebe4f7588d9eda526b21adb52d6a7a41c22e84cbdceb013007571ed7bf4e49755ea98432a2a8e6fe8df6b712b932320ef5da2043059cff7867b27cdda@172.16.66.7:30303
+2020-08-15 11:32:06  Listening for new connections on 0.0.0.0:8546.
+2020-08-15 11:32:36     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   55 µs
+2020-08-15 11:33:06     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   55 µs
+2020-08-15 11:33:36     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   55 µs
+2020-08-15 11:34:06     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   55 µs
+2020-08-15 11:34:36     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   55 µs
+2020-08-15 11:35:06     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,    0 req/s,   55 µs
+2020-08-15 11:35:36     1/25 peers   832 bytes chain    4 KiB db  0 bytes queue 1008 bytes sync  RPC:  0 conn,   30 req/s,   24 µs
+2020-08-15 11:35:45  Imported #1 0xfc60…3755 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:35:50  Imported #2 0xb97e…dde0 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:35:55  Imported #3 0x2bbf…d49b (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:00  Imported #4 0xcf53…000c (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:05  Imported #5 0xfb77…49bc (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:06    61/100 peers      2 KiB chain    5 KiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:36:10  Imported #6 0x7116…7d1f (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:15  Imported #7 0x1e05…9dda (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:20  Imported #8 0xdcf4…e820 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:25  Imported #9 0x10c3…49b2 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:36:30  Imported #10 0xbede…0e44 (210 txs, 4.41 Mgas, 4 ms, 20.46 KiB)
+2020-08-15 11:36:35  Imported #11 0x3d24…e9c7 (280 txs, 5.88 Mgas, 5 ms, 27.09 KiB)
+2020-08-15 11:36:36    61/100 peers     94 KiB chain  271 KiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:36:40  Imported #12 0x7688…aaa4 (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:36:45  Imported #13 0x7632…716e (311 txs, 6.53 Mgas, 6 ms, 30.03 KiB)
+2020-08-15 11:36:50  Imported #14 0xd80e…1d97 (280 txs, 5.88 Mgas, 5 ms, 27.10 KiB)
+2020-08-15 11:36:55  Imported #15 0xdc38…ceed (280 txs, 5.88 Mgas, 5 ms, 27.09 KiB)
+2020-08-15 11:37:00  Imported #16 0xbd57…4142 (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:37:05  Imported #17 0x9a61…ce65 (311 txs, 6.53 Mgas, 9 ms, 30.04 KiB)
+2020-08-15 11:37:06    61/100 peers    477 KiB chain    1 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:37:10  Imported #18 0x8177…1442 (280 txs, 5.88 Mgas, 5 ms, 27.10 KiB)
+2020-08-15 11:37:15  Imported #19 0xf415…7990 (280 txs, 5.88 Mgas, 5 ms, 27.10 KiB)
+2020-08-15 11:37:20  Imported #20 0x56fb…5869 (319 txs, 6.70 Mgas, 5 ms, 30.79 KiB)
+2020-08-15 11:37:25  Imported #21 0x9b91…5d42 (311 txs, 6.53 Mgas, 6 ms, 30.03 KiB)
+2020-08-15 11:37:30  Imported #22 0xd583…55fc (280 txs, 5.88 Mgas, 6 ms, 27.10 KiB)
+2020-08-15 11:37:35  Imported #23 0x3c7f…bf9d (280 txs, 5.88 Mgas, 5 ms, 27.09 KiB)
+2020-08-15 11:37:36    61/100 peers    926 KiB chain    2 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:37:40  Imported #24 0x55a5…1c03 (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:37:45  Imported #25 0xa357…ac3b (311 txs, 6.53 Mgas, 5 ms, 30.03 KiB)
+2020-08-15 11:37:50  Imported #26 0xb72e…bbee (280 txs, 5.88 Mgas, 5 ms, 27.10 KiB)
+2020-08-15 11:37:55  Imported #27 0xfe87…cda8 (282 txs, 5.92 Mgas, 5 ms, 27.29 KiB)
+2020-08-15 11:38:00  Imported #28 0xb93f…1e7d (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:38:05  Imported #29 0x2904…0cea (309 txs, 6.49 Mgas, 5 ms, 29.84 KiB)
+2020-08-15 11:38:06    61/100 peers      1 MiB chain    3 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:38:10  Imported #30 0x5032…038f (280 txs, 5.88 Mgas, 5 ms, 27.10 KiB)
+2020-08-15 11:38:15  Imported #31 0xddc4…99fd (298 txs, 6.26 Mgas, 5 ms, 28.80 KiB)
+2020-08-15 11:38:20  Imported #32 0x0d2f…2bfb (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:38:25  Imported #33 0x0042…df9c (293 txs, 6.15 Mgas, 5 ms, 28.33 KiB)
+2020-08-15 11:38:30  Imported #34 0x4b4e…4952 (280 txs, 5.88 Mgas, 6 ms, 27.09 KiB)
+2020-08-15 11:38:35  Imported #35 0x7fcb…f454 (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:38:36    61/100 peers      2 MiB chain    4 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:38:40  Imported #36 0x2d20…b2f5 (311 txs, 6.53 Mgas, 5 ms, 30.03 KiB)
+2020-08-15 11:38:45  Imported #37 0x8430…a2c7 (280 txs, 5.88 Mgas, 5 ms, 27.09 KiB)
+2020-08-15 11:38:50  Imported #38 0x2bf8…6388 (280 txs, 5.88 Mgas, 5 ms, 27.10 KiB)
+2020-08-15 11:38:55  Imported #39 0x0a84…9939 (319 txs, 6.70 Mgas, 6 ms, 30.79 KiB)
+2020-08-15 11:39:00  Imported #40 0xb74e…8101 (311 txs, 6.53 Mgas, 5 ms, 30.23 KiB)
+2020-08-15 11:39:05  Imported #41 0x7a2d…72b1 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:39:06    61/100 peers      2 MiB chain    4 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:39:10  Imported #42 0x365e…a1ef (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:39:15  Imported #43 0xc9d1…f749 (319 txs, 6.70 Mgas, 5 ms, 31.10 KiB)
+2020-08-15 11:39:20  Imported #44 0x9bdf…75ae (311 txs, 6.53 Mgas, 5 ms, 30.34 KiB)
+2020-08-15 11:39:25  Imported #45 0x29fd…548b (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:39:30  Imported #46 0x34be…86b0 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:39:35  Imported #47 0x6844…cb83 (319 txs, 6.70 Mgas, 6 ms, 31.10 KiB)
+2020-08-15 11:39:36    61/100 peers      2 MiB chain    5 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:39:40  Imported #48 0x2006…cd65 (311 txs, 6.53 Mgas, 5 ms, 30.33 KiB)
+2020-08-15 11:39:45  Imported #49 0x384b…2af2 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:39:50  Imported #50 0x7ac9…3db0 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:39:55  Imported #51 0x1600…dfd7 (319 txs, 6.70 Mgas, 6 ms, 31.10 KiB)
+2020-08-15 11:40:00  Imported #52 0x3bcc…ea12 (311 txs, 6.53 Mgas, 5 ms, 30.33 KiB)
+2020-08-15 11:40:05  Imported #53 0x78ff…fc36 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:40:06    61/100 peers      2 MiB chain    6 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:40:10  Imported #54 0x114d…6ffd (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:40:15  Imported #55 0x5a37…a51d (319 txs, 6.70 Mgas, 6 ms, 31.10 KiB)
+2020-08-15 11:40:20  Imported #56 0x48bb…c895 (311 txs, 6.53 Mgas, 5 ms, 30.33 KiB)
+2020-08-15 11:40:25  Imported #57 0xb15e…3a51 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:40:30  Imported #58 0xde30…a288 (280 txs, 5.88 Mgas, 8 ms, 27.37 KiB)
+2020-08-15 11:40:35  Imported #59 0x44b4…4aba (319 txs, 6.70 Mgas, 5 ms, 31.10 KiB)
+2020-08-15 11:40:36    61/100 peers      4 MiB chain    7 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:40:40  Imported #60 0xa225…423f (311 txs, 6.53 Mgas, 5 ms, 30.34 KiB)
+2020-08-15 11:40:45  Imported #61 0x934f…5438 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:40:50  Imported #62 0x3d83…8547 (319 txs, 6.70 Mgas, 6 ms, 31.10 KiB)
+2020-08-15 11:40:55  Imported #63 0xe7c4…45ee (311 txs, 6.53 Mgas, 5 ms, 30.34 KiB)
+2020-08-15 11:41:00  Imported #64 0x84cb…4ee0 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:41:05  Imported #65 0x1e59…4b6d (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:41:06    61/100 peers      4 MiB chain    8 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:41:10  Imported #66 0xde51…6a66 (319 txs, 6.70 Mgas, 5 ms, 31.10 KiB)
+2020-08-15 11:41:15  Imported #67 0x00da…e098 (311 txs, 6.53 Mgas, 5 ms, 30.34 KiB)
+2020-08-15 11:41:20  Imported #68 0xad75…0af4 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:41:25  Imported #69 0xedb8…6810 (280 txs, 5.88 Mgas, 5 ms, 27.37 KiB)
+2020-08-15 11:41:30  Imported #70 0xe557…0d39 (280 txs, 5.88 Mgas, 5 ms, 27.51 KiB)
+2020-08-15 11:41:35  Imported #71 0xd5ed…b773 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:41:36    61/100 peers      4 MiB chain    8 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:41:40  Imported #72 0x6bf8…f4c9 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:41:45  Imported #73 0x3baa…d14d (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:41:50  Imported #74 0x1566…2400 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:41:55  Imported #75 0x2818…1d48 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:00  Imported #76 0xf8ce…5582 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:05  Imported #77 0x6e64…02b0 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:06    61/100 peers      4 MiB chain    8 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:42:10  Imported #78 0x6ee5…3962 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:15  Imported #79 0xdb63…306b (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:20  Imported #80 0xe190…5b9d (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:25  Imported #81 0x65cf…f991 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:30  Imported #82 0xb8c9…321f (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:35  Imported #83 0xee4f…528d (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:36    61/100 peers      4 MiB chain    8 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:42:40  Imported #84 0x7b13…a7fc (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:45  Imported #85 0x9976…72f5 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:50  Imported #86 0xf978…79d5 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:42:55  Imported #87 0x8883…bbdc (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:00  Imported #88 0xb5fb…31d1 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:05  Imported #89 0x1045…0997 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:06    61/100 peers      4 MiB chain    8 MiB db  0 bytes queue   62 KiB sync  RPC:  0 conn,    0 req/s,   24 µs
+2020-08-15 11:43:10  Imported #90 0xe476…a016 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:15  Imported #91 0xe6a0…a434 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:20  Imported #92 0x84ab…5466 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:25  Imported #93 0x13eb…54d1 (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2020-08-15 11:43:30  Imported #94 0xa181…1afd (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
