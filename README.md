@@ -1,42 +1,54 @@
-# bench
-L'outil se compose de 3 onglets qui se complètent.
+# Generic benchmark framwork for blockchain
+3 tabs compose the application:
 
 ## Wallet Manager
-Permet la creation de wallet et leurs stockage.
-Le mainWallet sera celui du MOC pour le déploiement de POA et les autres seront pour les validateurs.
+Permit wallet management: create, save, reload.
+MainWallet is the MOC Wallet for PoA deployement. (can be something else for other blockchain deployment in hte future)
+Others are used for validators.
 
-Il est possible de sauvegarder une configuration des wallets via le bouton "Export Wallets".
-Les wallets sauvegardés se trouvent dans `server/wallets/` et il est possible de recharger la configuration avec le bouton "Reload Configuration" en haut à droite.
+Saving wallet configuration is possible by pressing the "Export Wallets" button
+
+Saved wallets are in `server/wallets/` and it is possible to reload the configuration by pressing "Reload Configuration" at the top right corner.
 
 ## PoA Network
-Permet de générer une configuration PoA Network pour lancer X noeuds d'une blockchain PoA.
-Utilisable sur n'importe quel infrastructure qui permet d'utiliser ansible.
+This is for PoA deployment automatic configuration generation.
 
-Il est important d'avoir la configuration des wallets chargée avant de générer la config.
+The deployment scripts are usable on any infrastructure that can run ansible.
 
-/!\ recharger la page réinitialise les données de l'application, il faut donc "reload configuration" après un rafraichissement de page web.
+It is important to load wallets before generating the configuration.
 
-Le champs "validators nodes ip" doit être rempli sous le format suivant: ip,ip
+/!\ Refresh the interface reset the cache automatically. You will have to "reload configuration" again.
+
+Text input "validators nodes ip" have to be formatted following this pattern: ip,ip
 
 ## Scenario Creator
-Permet de générer des scénarios de test selon plusieurs templates.
+Create and generate complex scenarios.
 
-On choisis le type d'évènement et à quel moment il se lance puis on ajoute l'évènement grâce au bouton.
-A droite se trouve le scénario et permet de configurer plus finement les évènements en cliquant dessus.
+In the right section all the events are displayed. A click on an event button display more configuration about it.
 
-Un code python est généré coté serveur pour lancer les tests dans `server/scenario/`
+A Python program is generated in server side in `server/scenario/`. This script is the event injector.
 
-## Comment ça marche ?
+## How it's work ?
 
-### Démarrer le logiciel
-`npm i` dans `client` et `server` puis `npm start` dans `client` et `server`.
+### Start server
+`npm i` in `server` folder then `npm start`
 
-### Lancer le déploiement
-Pour lancer le déploiement il faut:
-- Avoir préparé les wallets (ou juste reload la configuration)
-- Avoir généré les fichiers de configuration de PoA.
+### Start client
+`npm i` in `client` folder then `npm start`
 
-Quand c'est fait il faut envoyer le dossier `server/repos/poa-deployement-bench/` sur une machine qui pourra accéder aux machines qui feront tourner les noeuds.
-Cette machine doit avoir ansible et une clée ssh nommée bench qu'il faudra passer aux autres machines (kadeploy permet ça au lancement)
+### Starting PoA deployment
 
-Quand c'est fait, lancer `ansible-playbook -i hosts site.yml` et la chaine se déploie automatiquement.
+1. Generate or reload wallets (minimum 1 by node)
+2. Generate PoA Network configuration
+3. Copy `server/repos/poa-deployement-bench/` in a computer that run ansible and can access to other nodes.
+4. Run `export ANSIBLE_HOST_KEY_CHECKING=False`
+5. Run `ansible-playbook -i hosts site.yml`
+
+### Starting benchmark
+
+1. Generate scenario (using the interface)
+2. Copy the higher folder number from `server/scenarios/` in the same computer which has deployed the chain.
+3. Copy the scenario folder to all nodes and move the content of folder `0` in the same level as `scenario.py`
+4. Run `python3 ./scenario.py`
+
+/!\ The script can end before the full transaction injection. Please check parity logs in a node to check if some transactions are still mined.

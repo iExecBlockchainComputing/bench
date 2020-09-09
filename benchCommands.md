@@ -29,16 +29,16 @@ frontend$
 taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "apt update && apt install ansible -y" ]
 
 frontend$
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast put { ./11 } { ./ }
+taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast put { ./13 } { ./ }
 
 frontend$ 
-taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "mv ./11/* ." ]
+taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "mv ./13/* ." ]
 
 moc$ 
 export ANSIBLE_HOST_KEY_CHECKING=False
 
 moc$ 
-ansible-playbook -i hosts -f 60 site.yml
+ansible-playbook -i hosts site.yml
 
 frontend$ 
 taktuk -l root -s -o connector -o status -o output='"$host: $line\n"' -f <( uniq $OAR_FILE_NODES ) broadcast exec [ "npm i ethers" ]
